@@ -73,7 +73,7 @@ export class VueAuth extends Vue {
   }
 
   /** Logs the user out and removes their session on the authorization server */
-  logout(o?: LogoutOptions): void {
+  logout(o?: LogoutOptions): Promise<void> | undefined | void {
     return this.auth0Client?.logout(o);
   }
 
@@ -111,11 +111,10 @@ export class VueAuth extends Vue {
           window.location.search.includes("state="))
       ) {
         // handle the redirect and retrieve tokens
-        const {
-          appState,
-        } = (await this.auth0Client?.handleRedirectCallback()) ?? {
-          appState: undefined,
-        };
+        const { appState } =
+          (await this.auth0Client?.handleRedirectCallback()) ?? {
+            appState: undefined,
+          };
 
         // Notify subscribers that the redirect callback has happened, passing the appState
         // (useful for retrieving any pre-authentication state)
